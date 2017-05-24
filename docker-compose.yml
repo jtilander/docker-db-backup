@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=test
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+
+  psql:
+    image: postgres:alpine
+    container_name: psql
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=test
+      - POSTGRES_USER=root
+    volumes:
+      - ./tmp/psql:/var/lib/postgresql/data
+
+  backup_mysql:
+    image: jtilander/backup-db:latest
+    environment:
+      - DBTYPE=mysql
+      - CONTAINER=mysql
+      - USERNAME=root
+      - PASSWORD=password
+      - DBNAME=test
+      - "CRONSCHEDULE=*/1 * * * *"
+      - DEBUG=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp/backup:/data
+    command: cron
+
+  backup_psql:
+    image: jtilander/backup-db:latest
+    environment:
+      - DBTYPE=psql
+      - CONTAINER=psql
+      - USERNAME=root
+      - PASSWORD=password
+      - "CRONSCHEDULE=*/1 * * * *"
+      - DEBUG=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp/backup:/data
+    command: cron
