@@ -1,4 +1,4 @@
-FROM jtilander/alpine
+FROM hypriot/rpi-alpine:3.5
 MAINTAINER Jim Tilander
 
 RUN apk add --no-cache \
@@ -29,5 +29,5 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["backup"]
 
 ENV TINI_VERSION v0.14.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /sbin/tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-armhf /sbin/tini
 RUN chmod +x /sbin/tini

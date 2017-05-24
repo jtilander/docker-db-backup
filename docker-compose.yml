@@ -3,7 +3,7 @@ version: '2'
 services:
 
   mysql:
-    image: mysql:8
+    image: hypriot/rpi-mysql
     container_name: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
@@ -11,18 +11,18 @@ services:
     volumes:
       - ./tmp/mysql:/var/lib/mysql
 
-  psql:
-    image: postgres:alpine
-    container_name: psql
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=test
-      - POSTGRES_USER=root
-    volumes:
-      - ./tmp/psql:/var/lib/postgresql/data
+#  psql:
+#    image: postgres:alpine
+#    container_name: psql
+#    environment:
+#      - POSTGRES_PASSWORD=password
+#      - POSTGRES_DB=test
+#      - POSTGRES_USER=root
+#    volumes:
+#      - ./tmp/psql:/var/lib/postgresql/data
 
   backup_mysql:
-    image: jtilander/backup-db:latest
+    image: jtilander/backup-db:arm
     environment:
       - DBTYPE=mysql
       - CONTAINER=mysql
@@ -36,16 +36,16 @@ services:
       - ./tmp/backup:/data
     command: cron
 
-  backup_psql:
-    image: jtilander/backup-db:latest
-    environment:
-      - DBTYPE=psql
-      - CONTAINER=psql
-      - USERNAME=root
-      - PASSWORD=password
-      - "CRONSCHEDULE=*/1 * * * *"
-      - DEBUG=0
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./tmp/backup:/data
-    command: cron
+#  backup_psql:
+#    image: jtilander/backup-db:latest
+#    environment:
+#      - DBTYPE=psql
+#      - CONTAINER=psql
+#      - USERNAME=root
+#      - PASSWORD=password
+#      - "CRONSCHEDULE=*/1 * * * *"
+#      - DEBUG=0
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./tmp/backup:/data
+#    command: cron

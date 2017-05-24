@@ -1,5 +1,5 @@
 IMAGENAME?=jtilander/backup-db
-TAG?=latest
+TAG?=arm
 DEBUG?=1
 DBNAME?=test
 PASSWORD?=password
