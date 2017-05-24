@@ -1,6 +1,6 @@
 # Easily automated database dumps
 
-This container jtilander/backup-db provides an immediate way and a scheduled way to take ascii database dumps from both mysql and postgres. These dumps have the convinient property that they are easily restorable with this container as well.
+This container [jtilander/backup-db](https://hub.docker.com/r/jtilander/backup-db/) provides an immediate way and a scheduled way to take ascii database dumps from both mysql and postgres. These dumps have the convinient property that they are easily restorable with this container as well.
 
 ## Why?
 
@@ -60,6 +60,6 @@ Most of the functionality is controlled by the container's environment variables
 
 ## Sample
 
-The docker-compose file gives an example of launching two databases and then triggering periodic backups on these (one each minute) into a temporary directory. It should give a good idea of what is possible.
+The [docker-compose](https://github.com/jtilander/docker-db-backup/blob/master/docker-compose.yml) file gives an example of launching two databases and then triggering periodic backups on these (one each minute) into a temporary directory. It should give a good idea of what is possible.
 
 
