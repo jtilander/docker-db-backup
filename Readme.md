@@ -2,6 +2,11 @@
 
 This container [jtilander/backup-db](https://hub.docker.com/r/jtilander/backup-db/) provides an immediate way and a scheduled way to take ascii database dumps from both mysql and postgres. These dumps have the convinient property that they are easily restorable with this container as well.
 
+
+## Versions
+
+There is a regular amd64 version in latest and any 0.1 like tag. There are also an arm tag, as well as arm-0.1 version numbers suitable for raspberry pi.
+
 ## Why?
 
 The case for having the ascii SQL dumps instead of just the native file system files might be non obvious at first. The file system files are fine, but they do have race conditions and are susecptible to corruption. 
@@ -11,8 +16,6 @@ The file system files are also platform dependent and possibly version dependent
 The dumps on the other hand can be transfered between architectures as well as sometimes between versions (usually upwards). 
 
 Having periodical dumps of the database can also provide snapshots that you can travel back to in need.
-
-
 
 
 ## Assumptions
