@@ -16,7 +16,9 @@ ENVIRONMENT=-e DBTYPE=$(DBTYPE) \
 			-e DBNAME=$(DBNAME) \
 			-e PASSWORD=$(PASSWORD) \
 			-e HISTORY=$(HISTORY) \
-			-e USERNAME=$(USERNAME)
+			-e USERNAME=$(USERNAME) \
+			-e SENTRY_DSN=$(SENTRY_DSN) \
+			-e HOSTNAME=$(HOSTNAME)
 
 VOLUMES=-v $(PWD)/tmp/backup:/data \
 		-v /var/run/docker.sock:/var/run/docker.sock
@@ -47,5 +49,13 @@ push:
 login:
 	@docker login -u jtilander
 
-testup:
+test:
 	@docker-compose down && docker-compose up -d && docker-compose logs -f
+
+iterate:
+	docker run --rm $(ENVIRONMENT) \
+	$(VOLUMES) \
+	-v $(PWD)/backup-all.py:/app/backup-all.py \
+	-v $(PWD)/backup-all.sh:/app/backup-all.sh \
+	$(IMAGENAME):$(TAG) backup $(PWD)/tmp/all
+

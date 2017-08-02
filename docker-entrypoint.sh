@@ -6,17 +6,22 @@ if [ -z $CONTAINER ]; then
 	CONTAINER=$DBTYPE
 fi
 
+# Translate some dbtypes
+if [ "$DBTYPE" == "postgres" ]; then
+	DBTYPE=psql
+fi
+
 case "$1" in 
 	backup)
 		shift
 		[ "$DEBUG" == "1" ] && echo "Running backup"
-		exec /bin/bash /app/backup-$DBTYPE.sh
+		exec /bin/bash /app/backup-$DBTYPE.sh "$@"
 		;;
 
 	restore)
 		shift
 		[ "$DEBUG" == "1" ] && echo "Running restore"
-		exec /bin/bash /app/restore-$DBTYPE.sh
+		exec /bin/bash /app/restore-$DBTYPE.sh "$@"
 		;;
 
 	cron)

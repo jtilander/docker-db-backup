@@ -34,6 +34,8 @@ We can run in three modes:
 * restore: this will restore the most recent database file into the host "db"
 * cron: this will continiually run a backup operation ever night
 
+If the DBTYPE is set to 'all', then we will not require type, usernames nor passwords -- we will simply obtain these through the docker containers running the databases instead. This mode is suitable for running a whole machine backup.
+
 The mode is chosen by the command to the docker container. 
 
 ## Volumes
@@ -52,14 +54,15 @@ Most of the functionality is controlled by the container's environment variables
 |-------------|-------------|-----------|
 |DEBUG        |0            |Set to 1 for debug output|
 |HISTORY      |5            |How many snapshots to keep in a rolling fashion|
-|DBNAME       |database_name|The target database name (mostly for mysql) to backup|
-|USERNAME     |root         |Database credentials|
-|PASSWORD     |password     |Database credentials|
-|DBTYPE       |mysql        |Valid choices are mysql, psql|
+|DBNAME       |database_name|The target database name (mostly for mysql) to backup (not needed for all)|
+|USERNAME     |root         |Database credentials (not needed for all)|
+|PASSWORD     |password     |Database credentials (not needed for all)|
+|DBTYPE       |mysql        |Valid choices are mysql, psql, all|
 |PREFIX       |backup       |The archive files are prefixed this way|
-|CONTAINER    |$DBTYPE      |The name of the container running the database|
+|CONTAINER    |$DBTYPE      |The name of the container running the database (not needed for all)|
 |CRONSCHEDULE |0 * * * *    |Crontab entry for when to run the periodic backup|
-
+|SENTRY_DSN   |             |Optional reporting DSN for sentry|
+|HOSTNAME     |docker       |The actual host we are running on (auto detect in rancher)|
 
 ## Sample
 

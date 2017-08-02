@@ -3,8 +3,17 @@ MAINTAINER Jim Tilander
 
 RUN apk add --no-cache \
 		bash \
+		curl \
 		dcron \
-		docker
+		docker \
+		py-pip \
+		py-raven \
+		python
+
+RUN pip --disable-pip-version-check --no-cache-dir install \
+	blinker \
+	contextlib2 \
+	filelock
 
 ENV DEBUG=0 \
 	HISTORY=5 \
@@ -13,13 +22,15 @@ ENV DEBUG=0 \
 	PASSWORD=password \
 	DBTYPE=mysql \
 	PREFIX=backup \
-	CONTAINER=
+	CONTAINER= \
+	HOSTNAME=docker
 
 ENV	CRONSCHEDULE='0 * * * *'
 
 RUN mkdir -p /app
 COPY backup-*.sh restore-*.sh /app/
 COPY mail.sh /app/
+COPY *.py /app/
 
 RUN mkdir -p /data
 WORKDIR /data

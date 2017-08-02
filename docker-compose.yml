@@ -8,8 +8,15 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=test
-    volumes:
-      - ./tmp/mysql:/var/lib/mysql
+
+  mysql2:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=foobar
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_PASSWORD=wordpass
+      #- MYSQL_USER=foobar
 
   psql:
     image: postgres:alpine
@@ -18,8 +25,6 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=test
       - POSTGRES_USER=root
-    volumes:
-      - ./tmp/psql:/var/lib/postgresql/data
 
   backup_mysql:
     image: jtilander/backup-db:latest
@@ -43,6 +48,17 @@ services:
       - CONTAINER=psql
       - USERNAME=root
       - PASSWORD=password
+      - "CRONSCHEDULE=*/1 * * * *"
+      - DEBUG=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./tmp/backup:/data
+    command: cron
+
+  backup_all:
+    image: jtilander/backup-db:latest
+    environment:
+      - DBTYPE=all
       - "CRONSCHEDULE=*/1 * * * *"
       - DEBUG=0
     volumes:
