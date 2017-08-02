@@ -57,5 +57,7 @@ iterate:
 	$(VOLUMES) \
 	-v $(PWD)/backup-all.py:/app/backup-all.py \
 	-v $(PWD)/backup-all.sh:/app/backup-all.sh \
+	-v $(PWD)/backup-mysql.sh:/app/backup-mysql.sh \
+	-v $(PWD)/backup-psql.sh:/app/backup-psql.sh \
 	$(IMAGENAME):$(TAG) backup $(PWD)/tmp/all
 

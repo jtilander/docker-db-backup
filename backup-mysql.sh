@@ -8,6 +8,7 @@ exec 1>&2
 
 set -o pipefail
 
+MIN_FILE_SIZE=200
 MYDATE=$(date +%Y%m%d-%H%M%S)
 FULLPREFIX=${PREFIX}-${DBNAME}-mysql
 FILENAME=${FULLPREFIX}-${MYDATE}.sql.gz
@@ -25,6 +26,11 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+SIZE=$(ls -l $FILENAME | awk '{ print $5 }')
+if ((SIZE<MIN_FILE_SIZE)) ; then 
+    echo "[$0] FATAL: Output file ${FILENAME} is too small (${SIZE} was less than min ${MIN_FILE_SIZE}), probably indicates an error."
+    exit 1
+fi
 
 CANDIDATES=$(ls -tp ${FULLPREFIX}-*.sql.gz | grep -v '/$' | tail -n +$((HISTORY+1)))
 if [ -z $CANDIDATES ]; then

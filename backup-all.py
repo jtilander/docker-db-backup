@@ -35,6 +35,10 @@ def init_sentry():
             print ""
             traceback.print_exc()
 
+        def user_context(self, d):
+            for key in d.keys():
+                print "%s: %s" % (key, d[key])
+
     debug = os.environ.get('DEBUG', '0')
     dsn = os.environ.get('SENTRY_DSN', '')
     if debug == '1' or len(dsn) == 0:
@@ -116,7 +120,9 @@ def backup_all(basedir, sentry):
 
         logging.debug(command)
         try:
-            subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+            output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+            for line in output.splitlines():
+                logging.info('%s' % line.rstrip())
             logging.info('Backup of %s successful' % id)
         except subprocess.CalledProcessError as e:
             # lines = [x.strip() for x in e.output.splitlines()]
