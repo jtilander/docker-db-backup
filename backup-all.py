@@ -101,16 +101,16 @@ def backup_all(basedir, sentry):
 
     failures = 0
     for id in containers_ps():
-        image_ = container_image(id)
+        image = container_image(id)
         name = container_name(id)
 
-        logging.debug("Considering %s %s" % (name, image_))
+        logging.debug("Considering %s %s" % (name, image))
         database_type = None
-        if image_ in DATABASES['postgres']:
-            logging.debug('Image %s is in the postgres list %s' % (image_, DATABASES['postgres']))
+        if image in DATABASES['postgres']:
+            logging.debug('Image %s is in the postgres list %s' % (image, DATABASES['postgres']))
             database_type = 'postgres'
-        if image_ in DATABASES['mysql']:
-            logging.debug('Image %s is in the mysql list %s' % (image_, DATABASES['mysql']))
+        if image in DATABASES['mysql']:
+            logging.debug('Image %s is in the mysql list %s' % (image, DATABASES['mysql']))
             database_type = 'mysql'
         if database_type is None:
             continue
