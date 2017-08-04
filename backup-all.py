@@ -148,9 +148,9 @@ def backup_all(basedir, sentry):
 
 def main(basedir):
     if '1' == os.environ.get('DEBUG', '0'):
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)-15s %(levelname)-8s %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(levelname)-8s %(message)s')
     else:
-        logging.basicConfig(level=logging.INFO, format='%(asctime)-15s %(levelname)-8s %(message)s')
+        logging.basicConfig(level=logging.INFO, format='%(levelname)-8s %(message)s')
 
     sentry = init_sentry()
     try:
