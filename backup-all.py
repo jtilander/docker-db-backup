@@ -13,6 +13,7 @@ from raven.handlers.logging import SentryHandler
 from raven.conf import setup_logging
 
 HOSTNAME = os.environ.get('HOSTNAME', 'docker-container')
+TAG = os.environ.get('TAG', 'latest')
 
 DATABASES = ['postgres', 'mysql']
 
@@ -118,7 +119,7 @@ def backup_all(basedir, sentry):
             '-e CONTAINER=%(id)s ' +        \
             '-e PREFIX=%(prefix)s ' +       \
             '-e DEBUG=0 ' +                 \
-            'jtilander/backup-db backup'
+            'jtilander/backup-db:%s backup' % TAG
 
         command = command % locals()
 
