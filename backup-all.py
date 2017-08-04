@@ -105,20 +105,20 @@ def backup_all(basedir, sentry):
         name = container_name(id)
 
         logging.debug("Considering %s %s" % (name, image_))
-        image = None
+        database_type = None
         if image_ in DATABASES['postgres']:
             logging.debug('Image %s is in the postgres list %s' % (image_, DATABASES['postgres']))
-            image = 'postgres'
+            database_type = 'postgres'
         if image_ in DATABASES['mysql']:
             logging.debug('Image %s is in the mysql list %s' % (image_, DATABASES['mysql']))
-            image = 'mysql'
-        if image is None:
+            database_type = 'mysql'
+        if database_type is None:
             continue
-        logging.info("Found database %s container %s" % (image, name))
+        logging.info("Found database %s container %s" % (database_type, name))
 
         env = container_env(id)
 
-        kdatabase, kuser, kpassword, krootpassword, defaultuser = ENVMAP[image]
+        kdatabase, kuser, kpassword, krootpassword, defaultuser = ENVMAP[database_type]
 
         database = env.get(kdatabase, 'none')
         user = env.get(kuser, defaultuser)
@@ -134,7 +134,7 @@ def backup_all(basedir, sentry):
             '-e DBNAME=%(database)s ' +     \
             '-e USERNAME=%(user)s ' +       \
             '-e PASSWORD=%(password)s ' +   \
-            '-e DBTYPE=%(image)s ' +        \
+            '-e DBTYPE=%(database_type)s ' +        \
             '-e CONTAINER=%(id)s ' +        \
             '-e PREFIX=%(prefix)s ' +       \
             '-e DEBUG=0 ' +                 \
