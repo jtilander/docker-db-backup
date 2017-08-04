@@ -17,8 +17,8 @@ HOSTNAME = os.environ.get('HOSTNAME', 'docker-container')
 DATABASES = ['postgres', 'mysql']
 
 ENVMAP = {
-    'postgres': ('POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_ROOT_PASSWORD'),
-    'mysql': ('MYSQL_DATABASE', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD'),
+    'postgres': ('POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_PASSWORD', 'postgres'),
+    'mysql': ('MYSQL_DATABASE', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'root'),
 }
 
 
@@ -86,6 +86,7 @@ def container_env(id):
 
 
 def backup_all(basedir, sentry):
+    failures = 0
     for id in containers_ps():
         image = container_image(id)
         name = container_name(id)
@@ -97,11 +98,14 @@ def backup_all(basedir, sentry):
 
         env = container_env(id)
 
-        kdatabase, kuser, kpassword, krootpassword = ENVMAP[image]
+        kdatabase, kuser, kpassword, krootpassword, defaultuser = ENVMAP[image]
 
         database = env.get(kdatabase, 'none')
-        user = env.get(kuser, 'root')
-        password = env.get(kpassword, env.get(krootpassword, ''))
+        user = env.get(kuser, defaultuser)
+        if defaultuser == user:
+            password = env.get(krootpassword, '')
+        else:
+            password = env.get(kpassword, '')
         prefix = 'backup_%s' % name
 
         command = 'docker run --rm ' +      \
@@ -137,6 +141,10 @@ def backup_all(basedir, sentry):
             })
             sentry.captureException()
 
+            failures += 1
+
+    return failures
+
 
 def main(basedir):
     if '1' == os.environ.get('DEBUG', '0'):
@@ -146,13 +154,13 @@ def main(basedir):
 
     sentry = init_sentry()
     try:
-        backup_all(basedir, sentry)
+        failures = backup_all(basedir, sentry)
     except Exception as e:
         sentry.captureException()
         print e
         sys.exit(1)
 
-    sys.exit(0)
+    sys.exit(failures)
 
 
 if __name__ == '__main__':
