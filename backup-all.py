@@ -11,11 +11,16 @@ import json
 from raven import Client
 from raven.handlers.logging import SentryHandler
 from raven.conf import setup_logging
+from pprint import pprint
 
 HOSTNAME = os.environ.get('HOSTNAME', 'docker-container')
 TAG = os.environ.get('TAG', 'latest')
 
-DATABASES = ['postgres', 'mysql']
+DATABASES = {
+    'postgres': ['postgres'],
+    'mysql': ['mysql']
+}
+
 
 ENVMAP = {
     'postgres': ('POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_PASSWORD', 'postgres'),
@@ -87,13 +92,27 @@ def container_env(id):
 
 
 def backup_all(basedir, sentry):
+    global DATABASES
+
+    DATABASES['postgres'] += os.environ.get('EXTRA_PSQL', '').split()
+    DATABASES['mysql'] += os.environ.get('EXTRA_MYSQL', '').split()
+
+    # pprint(DATABASES)
+
     failures = 0
     for id in containers_ps():
-        image = container_image(id)
+        image_ = container_image(id)
         name = container_name(id)
 
-        logging.debug("Considering %s %s" % (name, image))
-        if image not in DATABASES:
+        logging.debug("Considering %s %s" % (name, image_))
+        image = None
+        if image_ in DATABASES['postgres']:
+            logging.debug('Image %s is in the postgres list %s' % (image_, DATABASES['postgres']))
+            image = 'postgres'
+        if image_ in DATABASES['mysql']:
+            logging.debug('Image %s is in the mysql list %s' % (image_, DATABASES['mysql']))
+            image = 'mysql'
+        if image is None:
             continue
         logging.info("Found database %s container %s" % (image, name))
 

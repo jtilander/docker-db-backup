@@ -18,7 +18,9 @@ ENVIRONMENT=-e DBTYPE=$(DBTYPE) \
 			-e HISTORY=$(HISTORY) \
 			-e USERNAME=$(USERNAME) \
 			-e SENTRY_DSN=$(SENTRY_DSN) \
-			-e HOSTNAME=$(HOSTNAME)
+			-e HOSTNAME=$(HOSTNAME) \
+			-e EXTRA_MYSQL="mysql_foobar mysql_extra" \
+			-e EXTRA_PSQL="psql_custom extra_fancy_postgres"
 
 VOLUMES=-v $(PWD)/tmp/backup:/data \
 		-v /var/run/docker.sock:/var/run/docker.sock
