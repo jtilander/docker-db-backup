@@ -128,6 +128,8 @@ def backup_all(basedir, sentry):
             password = env.get(kpassword, '')
         prefix = 'backup_%s' % name
 
+        history = os.environ.get('HISTORY', '3')
+
         command = 'docker run --rm ' +      \
             '-v %(basedir)s:/data ' +       \
             '-v /var/run/docker.sock:/var/run/docker.sock ' + \
@@ -138,6 +140,7 @@ def backup_all(basedir, sentry):
             '-e CONTAINER=%(id)s ' +        \
             '-e PREFIX=%(prefix)s ' +       \
             '-e DEBUG=0 ' +                 \
+            '-e HISTORY=%(history)s ' +     \
             'jtilander/backup-db:%s backup' % TAG
 
         command = command % locals()
