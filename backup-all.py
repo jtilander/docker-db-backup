@@ -126,6 +126,12 @@ def backup_all(basedir, sentry):
             password = env.get(krootpassword, '')
         else:
             password = env.get(kpassword, '')
+
+            # If there is also a root password set, run as the root user instead.
+            if kpassword != krootpassword and env.get(krootpassword, '') != '':
+                password = env.get(krootpassword, '')
+                user = defaultuser
+
         prefix = 'backup_%s' % name
 
         history = os.environ.get('HISTORY', '3')
@@ -152,11 +158,6 @@ def backup_all(basedir, sentry):
                 logging.info('%s' % line.rstrip())
             logging.info('Backup of %s successful' % id)
         except subprocess.CalledProcessError as e:
-            # lines = [x.strip() for x in e.output.splitlines()]
-            # logging.error("%s" % command)
-            # for line in lines:
-            #     logging.error(line, )
-
             sentry.user_context({
                 'command': command,
                 'hostname': HOSTNAME,
