@@ -19,7 +19,7 @@ if ! docker ps | grep ${CONTAINER} > /dev/null ; then
 fi
 
 echo "Backing up ${DBNAME} from container ${CONTAINER} into ${FILENAME}"
-docker exec ${CONTAINER} /usr/bin/mysqldump -u ${USERNAME} --password=${PASSWORD} ${DBNAME} | gzip -c > ${FILENAME}
+docker exec ${CONTAINER} /usr/bin/mysqldump --single-transaction -u ${USERNAME} --password=${PASSWORD} ${DBNAME} | gzip -c > ${FILENAME}
 
 if [ $? -ne 0 ]; then
 	echo "[$0] FATAL: Failed to create backupfile ${FILENAME}"
