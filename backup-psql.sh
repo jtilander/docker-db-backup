@@ -23,7 +23,9 @@ docker exec -t ${CONTAINER} /bin/bash -c "export PGPASSWORD=${PASSWORD} && pg_du
 
 if [ $? -ne 0 ]; then
 	echo "[$0] FATAL: Failed to create backupfile ${FILENAME}"
-	rm ${FILENAME}
+	if [ -f ${FILENAME} ]; then
+		rm ${FILENAME}
+	fi
 	exit 1
 fi
 
