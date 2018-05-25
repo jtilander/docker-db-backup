@@ -23,6 +23,7 @@ docker exec ${CONTAINER} /usr/bin/mysqldump --single-transaction -u ${USERNAME} 
 
 if [ $? -ne 0 ]; then
 	echo "[$0] FATAL: Failed to create backupfile ${FILENAME}"
+	rm ${FILENAME}
 	exit 1
 fi
 
