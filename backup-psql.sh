@@ -10,7 +10,11 @@ set -o pipefail
 
 MIN_FILE_SIZE=200
 MYDATE=$(date +%Y%m%d-%H%M%S)
-FULLPREFIX=${PREFIX}-psql
+if [ -z "${DBNAME}" ]; then
+	FULLPREFIX=${PREFIX}-psql
+else
+	FULLPREFIX=${PREFIX}-${DBNAME}-psql
+fi
 FILENAME=${FULLPREFIX}-${MYDATE}.sql.gz
 
 if ! docker ps | grep ${CONTAINER} > /dev/null ; then
@@ -18,8 +22,13 @@ if ! docker ps | grep ${CONTAINER} > /dev/null ; then
 	exit 1
 fi
 
-echo "Backing up all databases from container ${CONTAINER} into ${FILENAME}"
-docker exec -t ${CONTAINER} /bin/bash -c "export PGPASSWORD=${PASSWORD} && pg_dumpall -c -U ${USERNAME}" | gzip -c > ${FILENAME}
+if [ -z "${DBNAME}" ]; then
+	echo "Backing up all databases from container ${CONTAINER} into ${FILENAME}"
+	docker exec -t ${CONTAINER} /bin/bash -c "export PGPASSWORD=${PASSWORD} && pg_dumpall -c -U ${USERNAME}" | gzip -c > ${FILENAME}
+else
+	echo "Backing up ${DBNAME} from container ${CONTAINER} into ${FILENAME}"
+	docker exec -t ${CONTAINER} /bin/bash -c "export PGPASSWORD=${PASSWORD} && pg_dump -c -U ${USERNAME} ${DBNAME}" | gzip -c > ${FILENAME}
+fi
 
 if [ $? -ne 0 ]; then
 	echo "[$0] FATAL: Failed to create backupfile ${FILENAME}"
